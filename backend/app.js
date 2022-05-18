@@ -2,7 +2,20 @@ const express = require('express');
 const app = express();
 const multer = require('multer');
 const path = require('path');
+require('dotenv').config();
 
+let db;
+
+const { MongoClient, ServerApiVersion } = require('mongodb');
+const uri = process.env.MONGO_URL;
+const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
+client.connect(err => {
+  db = client.db("JSProfiler");
+  client.close();
+  app.listen(8000, () => {
+    console.log('백엔드 실행중');
+  })
+});
 
 app.set('port', 8000);
 let storage = multer.diskStorage({
@@ -23,16 +36,14 @@ let storage = multer.diskStorage({
 
 const upload = multer({ storage: storage }).single("file");
 
-app.post('/', (req, res) => {
+app.post('/file', (req, res) => {
   upload(req, res, err => {
       if(err) {
           return res.json({ success: false, err});
       }
+      
       return res.json({ success: true, url: res.req.file.path, fileName: res.req.file.fileName });
   })
 
 })
 
-app.listen(8000, () => {
-  console.log('백엔드 실행중');
-})

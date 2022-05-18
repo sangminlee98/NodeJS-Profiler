@@ -13,7 +13,7 @@ function App() {
     }
     formData.append("file", file);
     try {
-      const response = await axios.post('/', formData, config);
+      const response = await axios.post('/file', formData, config);
       console.log(response);
     } catch(e) {
       console.log(e);
