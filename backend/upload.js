@@ -165,7 +165,14 @@ router.post('/', (req, res) => {
     });
     return res.json({ success: true, url: res.req.file.path, fileName: res.req.file.fileName });
   })
-
 });
+
+router.get('/:id', (req,res) => {
+  const params = req.params.id;
+  db.collection(params).find().toArray((err, items) => {
+    res.send(items)
+  });
+  
+})
 
 module.exports = router;

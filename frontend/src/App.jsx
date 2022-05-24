@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 function App() {
   const [file, setFile] = useState();
@@ -24,7 +25,9 @@ function App() {
   return (
     <div>
       <input type="file" onChange={onChange}/>
-      <button onClick={onSubmit}>Submit</button>
+      <button onClick={onSubmit}>
+        <Link to={'/profile'}>Submit</Link>
+      </button>
     </div>
   );
 }
