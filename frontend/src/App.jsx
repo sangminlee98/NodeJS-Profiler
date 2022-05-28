@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import styles from './App.module.css';
 
 function App() {
-  const [file, setFile] = useState();
+  const [file, setFile] = useState(null);
   const onChange = (e) => {
     setFile(e.target.files[0]);
   }
@@ -23,11 +24,16 @@ function App() {
   }
   
   return (
-    <div>
-      <input type="file" onChange={onChange}/>
-      <button onClick={onSubmit}>
-        <Link to={'/profile'}>Submit</Link>
-      </button>
+    <div className={styles.contents}>
+      <div className={styles.container}>
+        <input type="file" accept='.txt' onChange={onChange}/>
+        { file ? (
+          <button onClick={onSubmit}>
+            <Link to={'/profile'}>제출하기</Link>
+          </button>
+          ) : <div/>
+        } 
+      </div>
     </div>
   );
 }

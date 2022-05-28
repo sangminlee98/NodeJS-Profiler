@@ -1,16 +1,20 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import styles from './Profile.module.css';
 import ApexChart from 'react-apexcharts';
 
 const Profile = () => {
   const [data, setData] = useState();
+  const [dataName, setDataName] = useState('');
   const [toggleTask, setToggleTask] = useState(true);
   const getData = async(id) => {
     const response = await axios.get(`/file/${id}`);
     return response.data[0];
   }
   const onClick = async(e) => {
+    if(e.target.tagName === 'DIV') return;
     const id = e.target.innerText;
+    setDataName(id);
     try {
       const response = await getData(id);
       let maxArr = [];
@@ -58,9 +62,26 @@ const Profile = () => {
     
   }
   return (
-    <>
+    <div className={styles.container}>
+      <div className={styles.btnContainer} onClick={onClick}>
+        <div>
+          <button>task1</button>
+          <button>task2</button>
+          <button>task3</button>
+          <button>task4</button>
+          <button>task5</button>
+        </div>
+        <div style={{marginTop:'10px'}}>
+          <button>core1</button>
+          <button>core2</button>
+          <button>core3</button>
+          <button>core4</button>
+          <button>core5</button>
+        </div>
+      </div>
       {data ?
         <div style={{width: '50vw'}}>
+          <h1 style={{textAlign: 'center'}}>{dataName}의 {dataName.includes('task') ? 'Core' : 'Task'}별 성능</h1>
           <ApexChart
             series={[
               {
@@ -91,10 +112,6 @@ const Profile = () => {
               stroke: {
                 curve: 'straight'
               },
-              title: {
-                text: 'Product Trends by Month',
-                align: 'left'
-              },
               grid: {
                 row: {
                   colors: ['#f3f3f3', 'transparent'],
@@ -108,22 +125,8 @@ const Profile = () => {
           />
         </div> 
         : null
-      }
-      
-      
-      <div onClick={onClick}>
-        <button>task1</button>
-        <button>task2</button>
-        <button>task3</button>
-        <button>task4</button>
-        <button>task5</button>
-        <button>core1</button>
-        <button>core2</button>
-        <button>core3</button>
-        <button>core4</button>
-        <button>core5</button>
-      </div>
-    </>
+      }    
+    </div>
   )
 };
 
