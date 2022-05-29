@@ -17,45 +17,45 @@ const Profile = () => {
     setDataName(id);
     try {
       const response = await getData(id);
-      let maxArr = [];
-      let minArr = [];
-      let avgArr = [];
-      if(id.includes('task')) {
-        setToggleTask(true);
-        Object.keys(response).slice(1,6).map(key => {
-          return maxArr.push(Math.max(...response[key]))
-        });
-        Object.keys(response).slice(1,6).map(key => {
-          return minArr.push(Math.min(...response[key]))
-        });
-        Object.keys(response).slice(1,6).map(key => {
-          return avgArr.push((response[key].reduce((prev, curr) => prev+Number(curr),0)) / 10);
+      let maxArr = [],
+        minArr = [],
+        avgArr = [],
+        stdArr = [];
+      console.log(response)
+        setToggleTask(id.includes('task') ? true : false);
+        
+        Object.keys(response).slice(1,6).map((key, index) => {
+          // 최대값 배열
+          maxArr.push(Math.max(...response[key]))
+
+          // 최솟값 배열
+          minArr.push(Math.min(...response[key]))
+
+          // 평균값 배열
+          avgArr.push((response[key].reduce((prev, curr) => prev+Number(curr),0)) / 10);
+
+          // 표준편차 배열
+          const avg = avgArr[index];
+          let sumDeviSqr = 0; // 편차 제곱의 합
+          for (const x of response[key]) {
+            // 편차 = 자료값 - 평균
+            let devi= parseInt(x) - avg;
+
+            sumDeviSqr = sumDeviSqr + Math.pow(devi, 2)
+          }
+          // 분산 = 편차들의 제곱 / 자료 갯수
+          const dispersion = sumDeviSqr / response[key].length
+          // 표준편차 = 분산의 제곱근
+          const std = Math.sqrt(dispersion).toFixed(1);
+          return stdArr.push(std)
         });
         const dataInfo = {
           max: maxArr,
           min: minArr,
-          avg: avgArr
+          avg: avgArr,
+          std: stdArr
         };
         setData(dataInfo);
-      }
-      if(id.includes('core')) {
-        setToggleTask(false);
-        Object.keys(response).slice(1,6).map(key => {
-          return maxArr.push(Math.max(...response[key]))
-        });
-        Object.keys(response).slice(1,6).map(key => {
-          return minArr.push(Math.min(...response[key]))
-        });
-        Object.keys(response).slice(1,6).map(key => {
-          return avgArr.push((response[key].reduce((prev, curr) => prev+Number(curr),0)) / 10);
-        });
-        const dataInfo = {
-          max: maxArr,
-          min: minArr,
-          avg: avgArr
-        };
-        setData(dataInfo);
-      }
     } catch(e) {
       throw new Error(e);
     }
@@ -95,6 +95,10 @@ const Profile = () => {
               {
                 name: 'avg',
                 data: data.avg
+              },
+              {
+                name: 'std',
+                data: data.std
               }
             ]}
             options= {{
